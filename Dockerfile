@@ -3,7 +3,7 @@ FROM ghcr.io/puppeteer/puppeteer:latest
 
 # Set working directory inside the container
 WORKDIR /app
-
+USER root
 # Copy package files first to leverage Docker layer caching
 COPY package.json package-lock.json* ./
 
