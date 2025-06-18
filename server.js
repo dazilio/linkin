@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const email = process.env.LINKEDIN_EMAIL;
 const password = process.env.LINKEDIN_PASS;
+const cookieUrl = process.env.COOKIE_PROXY;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,7 +34,7 @@ app.get('/scrape', async (req, res) => {
   }
 
   try {
-    const data = await scrapeLinkedInProfile(url);
+    const data = await scrapeLinkedInProfile(url,cookieUrl);
     return res.status(200).json({ success: true, data });
   } catch (err) {
     console.error('Scrape error:', err);

@@ -23,11 +23,11 @@ async function autoScroll(page) {
       });
     });
   } catch (err) {
-    console.warn('⚠️ AutoScroll error, possibly due to navigation:', err.message);
+    console.warn('AutoScroll error, possibly due to navigation:', err.message);
   }
 }
 
-async function scrapeLinkedInProfile(profileUrl) {
+async function scrapeLinkedInProfile(profileUrl, cookieUrl) {
   try {
     const browser = await puppeteer.launch({
       headless: 'new',
@@ -42,14 +42,14 @@ async function scrapeLinkedInProfile(profileUrl) {
 
 // Load cookies from cookie-proxy-server (http://localhost:3012/cookies)
 try {
-  const res = await fetch('http://host.docker.internal:3012/cookies');
+  const res = await fetch(cookieUrl);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   
   const cookies = await res.json();
   await page.setCookie(...cookies);
-  console.log('✅ Cookies loaded and set in browser');
+  console.log('Cookies loaded and set in browser');
 } catch (err) {
-  console.warn('⚠️ Failed to fetch cookies from proxy server:', err.message);
+  console.warn('Failed to fetch cookies from proxy server:', err.message);
 }
 
 
@@ -57,7 +57,7 @@ try {
     console.log('Visited:', page.url());
 
     if (page.url().includes('login')) {
-      throw new Error('❌ Not logged in. Your cookies may be expired or invalid.');
+      throw new Error('Not logged in. Your cookies may be expired or invalid.');
     }
 
     await autoScroll(page);
@@ -184,14 +184,14 @@ try {
 
       skills = Array.from(new Set(skills)); // remove duplicates
     } catch (err) {
-      console.warn('⚠️ Could not load skills section:', err.message);
+      console.warn('Could not load skills section:', err.message);
     }
 
     await browser.close();
     return { ...profileData, skills };
 
   } catch (err) {
-    console.error('🔥 Fatal scrape error:', err);
+    console.error('Fatal scrape error:', err);
     throw err;
   }
 }
